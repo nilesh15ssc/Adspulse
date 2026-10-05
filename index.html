@@ -1,0 +1,69 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..700&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><link rel="icon" href="data:image/svg+xml,<svg width='28' height='28' viewBox='0 0 28 28' aria-hidden='true'><rect width='28' height='28' rx='7' fill='%231d2633'/><path d='M4 15h5l2.5-6 4 11 2.5-5H24' fill='none' stroke='%234cc38a' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<title>AdsPulse: Meta and Google Ads performance in one view</title>
+<meta name="description" content="AdsPulse connects to your Meta and Google Ads accounts read-only and shows which placements, creatives, audiences and search terms are working, and what to fix.">
+</head><body>
+<div class="wrap"><header class="nav"><a class="logo" href="index.html"><svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#1d2633"/><path d="M4 15h5l2.5-6 4 11 2.5-5H24" fill="none" stroke="#4cc38a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>AdsPulse</a><nav aria-label="Main"><a href="index.html#what">What you see</a><a href="index.html#how">How it works</a><a href="index.html#trust">Data &amp; access</a><a href="index.html#pilot">Pilot</a></nav></header></div>
+<main>
+<div class="wrap"><section class="hero">
+ <div>
+  <h1>See which ads are working, and which are quietly burning budget.</h1>
+  <p class="lede">AdsPulse connects to your Meta and Google Ads accounts and checks every placement, creative, audience and search term against your own averages. You get a short list of what to fix, what to watch and what to scale.</p>
+  <a class="cta" href="#pilot">Join the free pilot</a>
+  <span class="cta-note">Read-only access. Nothing in your campaigns is changed.</span>
+ </div>
+ <figure class="monitor" aria-label="Example of an AdsPulse account summary" style="margin:0">
+  <div class="mh"><span><b>Your account</b>, last 30 days</span><span>Meta + Google</span></div>
+  <svg class="pulse" viewBox="0 0 480 120" preserveAspectRatio="none" aria-hidden="true">
+   <line class="flat" x1="0" y1="70" x2="480" y2="70"/>
+   <path d="M0 70 H70 L84 62 L96 70 H150 L162 30 L176 104 L190 54 L200 70 H262 L274 64 L286 70 H330 L342 18 L356 110 L370 48 L382 70 H480"/>
+  </svg>
+  <div class="flags">
+   <div class="flag"><span>Audience Network is costing 2× your average per lead</span><small>Exclude</small></div>
+   <div class="flag"><span>Your top reel: frequency 3.8, click-through falling</span><small>Refresh</small></div>
+   <div class="flag"><span>Search campaign losing 22% of impressions to budget</span><small>Scale</small></div>
+  </div>
+ </figure>
+</section></div>
+
+<section class="band" id="what"><div class="wrap">
+ <h2>What you see</h2>
+ <p class="intro">Six views built for people who run performance ads every day. Every row is judged against your own account, not an industry average.</p>
+ <div class="views">
+  <div><h3>Placements</h3><p>Feed, Reels, Stories, Audience Network, Search, YouTube, Display: what each one really costs per result.</p><span class="verdict v-r">Exclude or cap</span></div>
+  <div><h3>Creatives</h3><p>Every ad with its preview, rated winner, fatigued, underperforming or still learning, with the reason in plain words.</p><span class="verdict v-a">Fatigued</span></div>
+  <div><h3>Audiences</h3><p>Each ad set's targeting in one line, saturation checks, and cost per result by age and gender.</p><span class="verdict v-a">Saturating</span></div>
+  <div><h3>Search terms</h3><p>The searches that triggered your Google ads, with suggestions for new negatives and new keywords.</p><span class="verdict v-g">Add as keyword</span></div>
+  <div><h3>Overview</h3><p>Spend, results and cost per result across both platforms, day by day, in one chart.</p></div>
+  <div><h3>Alerts</h3><p>Everything that needs action in one list, sorted by how much money is at stake.</p><span class="verdict v-g">Scale</span></div>
+ </div>
+</div></section>
+
+<section class="band" id="how"><div class="wrap">
+ <h2>How it works</h2>
+ <p class="intro">Setup takes a couple of minutes and doesn't need a developer.</p>
+ <ol class="how">
+  <li><h3>Connect</h3><p>Sign in with Facebook and Google and choose which ad accounts AdsPulse can read.</p></li>
+  <li><h3>Check</h3><p>AdsPulse pulls your performance data and compares every placement, creative and audience with your account's own averages.</p></li>
+  <li><h3>Act</h3><p>Open the alerts list, fix what's wasting money, and move budget to what's working.</p></li>
+ </ol>
+</div></section>
+
+<section class="band" id="trust"><div class="wrap trust">
+ <div><h2>Your data and access</h2><p class="intro" style="margin:0">You stay in control of your ad accounts at all times.</p></div>
+ <ul>
+  <li><b>Read-only.</b> AdsPulse asks only for permission to read reports (<code>ads_read</code> on Meta). It cannot create, edit, pause or delete ads.</li>
+  <li><b>Encrypted.</b> Access tokens are stored encrypted and never shared.</li>
+  <li><b>Not sold, not shared.</b> Your data is used only to show you your own reports.</li>
+  <li><b>Disconnect any time.</b> One click removes access and deletes your stored token. See <a href="data-deletion.html">how to delete your data</a>.</li>
+ </ul>
+</div></section>
+
+<section class="band" id="pilot"><div class="wrap">
+ <div class="pilot">
+  <div><h2>Free pilot for a few advertisers</h2><p>We're onboarding a small group of brands and agencies running Meta or Google Ads. Pilots get full access free, in exchange for honest feedback.</p></div>
+  <a class="cta" href="mailto:nilesh15ssc@gmail.com?subject=AdsPulse%20pilot">Request pilot access</a>
+ </div>
+</div></section>
+</main>
+<footer><div class="wrap"><span>© 2026 AdsPulse. Contact: <a href="mailto:nilesh15ssc@gmail.com" style="margin:0">nilesh15ssc@gmail.com</a></span><span><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="data-deletion.html">Data deletion</a></span></div></footer>
+</body></html>
