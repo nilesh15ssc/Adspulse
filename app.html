@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>AdsPulse demo: see the product with sample data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#10151d;--panel:#171e29;--panel2:#1e2734;--line:#283244;--ink:#e6eaf1;--mute:#8d98aa;--faint:#5d687a;--accent:#7ea6ff;
+--red:#f06464;--amber:#eaa54a;--green:#4cc38a;--meta:#7ea6ff;--google:#4cc38a;--redbg:rgba(240,100,100,.11);--greenbg:rgba(76,195,138,.11);--amberbg:rgba(234,165,74,.11);color-scheme:dark}
+*{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;font-variant-numeric:tabular-nums}
+a{color:var(--accent)}button,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:100vh}
+nav.side{background:var(--panel);border-right:1px solid var(--line);padding:18px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{display:flex;gap:10px;align-items:center;padding:0 8px 16px}
+.brand .mark{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--meta),var(--google));display:grid;place-items:center;font-weight:700;color:#0e1420;font-stretch:80%}
+.brand b{display:block;font-stretch:85%;font-size:16px}.brand small{color:var(--mute);font-size:12px}
+.grp{margin:14px 0 4px;padding:0 8px;color:var(--faint);font-size:12px;font-weight:600}
+.nav-a{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-radius:6px;color:var(--ink);text-decoration:none}
+.nav-a:hover{background:var(--panel2)}.nav-a.on{background:#24324a;box-shadow:inset 3px 0 0 var(--accent)}
+.ct{font-size:11px;border-radius:10px;padding:1px 7px;background:var(--redbg);color:var(--red)}.ct:empty{display:none}
+.side-foot{margin-top:18px;padding:10px 8px;border-top:1px solid var(--line);color:var(--mute);font-size:12px;line-height:1.7}
+main{min-width:0;padding:20px 26px 60px}
+.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+.top h1{margin:0;font-size:28px;font-stretch:80%}.top p{margin:4px 0 0;color:var(--mute);max-width:70ch}
+.ctrls{display:flex;gap:10px;flex-wrap:wrap}
+.ctl{display:grid;gap:3px;font-size:12px;color:var(--mute)}
+select{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:6px 9px;font-size:13px;min-width:170px}
+.grid{display:grid;gap:16px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.mt{margin-top:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;min-width:0}
+.card h3{margin:0 0 2px;font-size:16px;font-stretch:88%;display:flex;gap:8px;align-items:center}
+.card .sub{margin:0 0 12px;color:var(--mute);font-size:13px;max-width:90ch}
+.kpi .l{color:var(--mute);font-size:12.5px}.kpi .v{font-size:26px;font-weight:700;font-stretch:80%;margin:2px 0}.kpi .d{font-size:12px;color:var(--mute)}
+.chartbox{position:relative;height:260px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th{background:var(--panel2);color:var(--mute);font-weight:600;font-size:12px;cursor:default}
+th.l,td.l{text-align:left}td.l{max-width:360px;overflow:hidden;text-overflow:ellipsis}td.wrap{white-space:normal;min-width:240px}
+.up{color:var(--green)}.dn{color:var(--red)}.fl{color:var(--mute)}
+.pill{display:inline-block;border-radius:20px;padding:1px 8px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.p-good{background:var(--greenbg);color:var(--green)}.p-bad{background:var(--redbg);color:var(--red)}.p-warn{background:var(--amberbg);color:var(--amber)}.p-info{background:rgba(126,166,255,.12);color:var(--accent)}.p-mute{background:var(--panel2);color:var(--mute)}
+.plat{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}.plat.meta{background:var(--meta)}.plat.google{background:var(--google)}
+.bar{height:7px;background:var(--panel2);border-radius:4px;position:relative;min-width:90px}.bar i{position:absolute;inset:0 auto 0 0;border-radius:4px;background:var(--accent)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.tabs button{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer;color:var(--mute);font-size:12.5px}
+.tabs button.on{color:var(--ink);border-color:#3b4e72;background:#22304a}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.cr{background:var(--panel2);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.cr .th{aspect-ratio:1.6;background:#141b26 center/cover no-repeat;display:grid;place-items:center;color:var(--faint);font-size:12px;padding:10px;text-align:center}
+.cr .th.txt{aspect-ratio:2.6;color:var(--ink);font-weight:600;font-size:14px;line-height:1.35;place-items:center start;text-align:left;padding:14px}
+.cr .bd{padding:10px 12px;display:grid;gap:6px}
+.cr .nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cr .meta{color:var(--mute);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cr dl{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:0}.cr dt{color:var(--faint);font-size:11px}.cr dd{margin:0;font-weight:600}
+.cr .why{color:var(--mute);font-size:12px}
+.list{display:grid;gap:8px}
+.item{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--panel2)}
+.item .h{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-weight:600}.item .m{color:var(--mute);font-size:12.5px;margin-top:3px}
+.sev-bad{border-left:3px solid var(--red)}.sev-warn{border-left:3px solid var(--amber)}.sev-good{border-left:3px solid var(--green)}
+.banner{border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;background:var(--panel)}
+.banner.err{border-color:#5a2a33;background:#24171c}.banner.ok{border-color:#1f4a3a;background:#132520}.banner.demo{border-color:#4a3d22;background:#221d14}
+.conn{display:grid;gap:12px}
+.conn .row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.btn{background:var(--accent);color:#0e1420;border:0;border-radius:7px;padding:8px 14px;cursor:pointer;font-weight:600;text-decoration:none;display:inline-block}
+.btn.ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+ol.steps{margin:0;padding-left:20px;color:var(--mute);line-height:1.7}ol.steps b{color:var(--ink)}
+.empty{color:var(--mute);padding:24px;text-align:center}
+.skeleton{height:120px;border-radius:10px;background:linear-gradient(90deg,var(--panel),var(--panel2),var(--panel));background-size:200% 100%;animation:sh 1.2s infinite}
+@keyframes sh{to{background-position:-200% 0}}
+@media (max-width:1100px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:1fr 1fr}}
+@media (max-width:820px){.app{grid-template-columns:1fr}nav.side{position:static;height:auto;display:flex;overflow-x:auto;gap:4px;padding:10px;border-right:0;border-bottom:1px solid var(--line)}
+.brand,.grp,.side-foot{display:none}.nav-a{flex:none}main{padding:16px 14px 50px}.g2,.g3{grid-template-columns:1fr}select{min-width:0;width:100%}.ctrls{width:100%}.ctl{flex:1 1 140px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <nav class="side" aria-label="Sections">
+    <div class="brand"><div class="mark">AP</div><div><b>AdsPulse</b><small>Meta + Google, one view</small></div></div>
+    <a class="nav-a" href="#overview">Overview</a>
+    <a class="nav-a" href="#alerts">Alerts <span class="ct" id="alert-ct"></span></a>
+    <div class="grp">Breakdowns</div>
+    <a class="nav-a" href="#placements">Placements</a>
+    <a class="nav-a" href="#creatives">Creatives</a>
+    <a class="nav-a" href="#audiences">Audiences</a>
+    <a class="nav-a" href="#search">Google Search</a>
+    <div class="grp">Setup</div>
+    <a class="nav-a" href="#connections">Connections</a>
+    <div class="grp">AdsPulse</div>
+    <a class="nav-a" href="index.html">← Back to website</a>
+    <a class="nav-a" href="index.html#pilot">Request pilot access</a>
+    <div class="side-foot" id="side-foot"></div>
+  </nav>
+  <main>
+    <header class="top">
+      <div><h1 id="vt">Overview</h1><p id="vs"></p></div>
+      <div class="ctrls">
+        <label class="ctl"><span>Meta account</span><select id="sel-meta"></select></label>
+        <label class="ctl"><span>Google Ads account</span><select id="sel-google"></select></label>
+        <label class="ctl"><span>Date range</span><select id="sel-days"><option value="7">Last 7 days</option><option value="14">Last 14 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select></label>
+      </div>
+    </header>
+    <div id="banner"></div>
+    <div id="view" aria-live="polite"></div>
+  </main>
+</div>
+<script>
+const DEMO=(function(){
+// Sample data with the same shapes the live clients return. Used until credentials are set.
+let seed = 7;
+const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+const r = (a, b) => a + rnd() * (b - a);
+const pick = a => a[Math.floor(rnd() * a.length)];
+const reset = s => { seed = s; };
+const day = i => new Date(Date.now() - i * 864e5).toISOString().slice(0, 10);
+function m(spend, imp, clk, res) { return { spend, impressions: Math.round(imp), clicks: Math.round(clk), results: Math.round(res), ctr: imp ? clk / imp : 0, cpm: imp ? spend / imp * 1000 : 0, cpr: res >= 1 ? spend / Math.round(res) : null }; }
+
+const meta = {
+  accounts: () => [{ id: 'act_demo1', name: 'Demo brand — Meta', currency: 'INR', timezone: 'Asia/Kolkata', active: true, demo: true }],
+  overview(_, days) { reset(11); return Array.from({ length: days }, (_, i) => { const s = r(95e3, 140e3), imp = s / r(130, 190) * 1000, c = imp * r(.009, .014); return { date: day(days - i), ...m(s, imp, c, s / r(380, 520)), reach: imp / 1.6, frequency: r(1.4, 2.1) }; }); },
+  placements(_, days) { reset(12); const k = days / 30;
+    return [['facebook', 'feed', 1.0, 420], ['instagram', 'feed', .8, 470], ['instagram', 'reels', .9, 390], ['instagram', 'story', .45, 560], ['facebook', 'facebook_reels', .3, 410], ['facebook', 'marketplace', .12, 690], ['facebook', 'video_feeds', .1, 610], ['audience_network', 'classic', .14, 980], ['messenger', 'messenger_inbox', .03, 1300], ['facebook', 'right_hand_column', .04, 1150]]
+      .map(([p, pos, w, cpl]) => { const s = 1.05e6 * w * k * r(.85, 1.15), imp = s / r(90, 260) * 1000, c = imp * r(.005, .016); return { platform: p, position: pos, ...m(s, imp, c, s / (cpl * r(.85, 1.15))) }; }); },
+  demographics(_, days) { reset(13); const k = days / 30; const out = [];
+    ['18-24', '25-34', '35-44', '45-54', '55-64', '65+'].forEach((a, i) => ['female', 'male', 'unknown'].forEach(g => { const w = [.6, 1.4, 1.1, .6, .25, .1][i] * (g === 'unknown' ? .05 : g === 'female' ? 1.2 : .9);
+      const s = 7e5 * w * k * r(.8, 1.2), imp = s / r(110, 210) * 1000, c = imp * r(.007, .015); out.push({ age: a, gender: g, ...m(s, imp, c, s / ([560, 410, 430, 520, 720, 950][i] * r(.85, 1.2))) }); })); return out; },
+  creatives(_, days) { reset(14); const hooks = ['Smile reveal', 'Before / after', 'Doctor explains', 'Price anchor', 'Customer story', 'UGC unboxing', 'Home scan demo', 'EMI offer', 'Myth buster', 'Speed promise', '3 reasons carousel', 'Founder note'];
+    return hooks.map((h, i) => { const wk = Math.max(1, Math.round(days / 7)), fat = i % 4 === 1, cpl = r(320, 780);
+      const weeks = Array.from({ length: wk }, (_, w) => { const s = r(12e3, 70e3), f = 1.3 + w * (fat ? .55 : .15) + r(0, .3), ctr = (fat ? .019 - w * .0028 : r(.009, .016)), imp = s / r(120, 200) * 1000; return { start: day(days - w * 7), ...m(s, imp, imp * Math.max(.004, ctr), s / cpl), frequency: f }; });
+      const t = weeks.reduce((a, w) => ({ spend: a.spend + w.spend, impressions: a.impressions + w.impressions, clicks: a.clicks + w.clicks, results: a.results + w.results }), { spend: 0, impressions: 0, clicks: 0, results: 0 });
+      const fmt = pick(['VIDEO', 'PHOTO', 'SHARE']);
+      return { id: 'ad' + i, platform: 'meta', name: `${h} ${fmt === 'VIDEO' ? 'reel' : 'static'} v${1 + i % 3}`, campaign: pick(['Prospecting — Broad', 'Prospecting — Interests', 'Retargeting 30d']), adset: pick(['Women 25–40', 'Advantage+ broad', 'Website visitors 30d', 'Lookalike 1%']),
+        status: 'ACTIVE', created: day(Math.round(r(10, 80))), thumb: null, title: h, body: 'Straighter teeth from home. Book a free scan.', format: fmt, weeks, ...t, ctr: t.clicks / t.impressions, cpr: t.results ? t.spend / t.results : null,
+        frequency: weeks[weeks.length - 1].frequency, ctrFirst: weeks[0].ctr, ctrLast: weeks[weeks.length - 1].ctr, freqFirst: weeks[0].frequency }; }); },
+  audiences(_, days) { reset(15); const k = days / 30;
+    return [['Women 25–40 · Top metros', 'Age 25–40 · Women · Mumbai, Delhi, Bengaluru'], ['Advantage+ broad', 'Age 18–65+ · India · Advantage+ audience'], ['Interest: dental care', 'Age 22–45 · India · Interests: Orthodontics, Dentistry +2'], ['Lookalike 1% buyers', 'Age 21–50 · India · Custom: LAL 1% purchasers'], ['Website visitors 30d', 'Age 18–65+ · India · Custom: Site visitors 30d · Excludes 1 audience(s)'], ['Video viewers 75%', 'Custom: Video viewers 75% 60d'], ['Corporate professionals', 'Age 25–45 · Interests: Business, Management +3'], ['Students 18–24', 'Age 18–24 · Interests: University students']]
+      .map(([n, t], i) => { const s = r(8e4, 6e5) * k, freq = r(1.3, 4.4), imp = s / r(110, 260) * 1000, c = imp * r(.006, .016); return { id: 'as' + i, name: n, campaign: i > 3 ? 'Retargeting & niche' : 'Prospecting', status: 'ACTIVE', goal: 'LEAD_GENERATION', targeting: t, ...m(s, imp, c, s / r(300, 900)), frequency: freq, reach: imp / freq }; }); },
+};
+
+const google = {
+  accounts: () => [{ id: '1234567890', name: 'Demo brand — Google Ads', currency: 'INR', demo: true }],
+  overview(_, days) { reset(21); return Array.from({ length: days }, (_, i) => { const s = r(6e4, 95e3), imp = s / r(25, 60) * 1000, c = imp * r(.03, .06); return { date: day(days - i), ...m(s, imp, c, s / r(850, 1250)), value: 0 }; }); },
+  placements(_, days) { reset(22); const k = days / 30;
+    return { networks: [['Google Search', 1, 900], ['Search partners', .08, 1400], ['Display network', .12, 1700], ['YouTube', .1, 1500], ['Cross-network (PMax)', .35, 1050]].map(([p, w, cpl]) => { const s = 1.9e6 * w * k * r(.85, 1.15), imp = s / r(20, 120) * 1000; return { platform: 'google', position: p, ...m(s, imp, imp * r(.004, .06), s / cpl) }; }),
+      devices: [['MOBILE', .72, 950], ['DESKTOP', .22, 1150], ['TABLET', .06, 1400]].map(([d, w, cpl]) => { const s = 2.4e6 * w * k, imp = s / r(25, 60) * 1000; return { device: d, ...m(s, imp, imp * r(.03, .06), s / cpl) }; }) }; },
+  campaigns(_, days) { reset(23); const k = days / 30;
+    return [['Brand — Exact', 'SEARCH'], ['Non-brand — Aligners', 'SEARCH'], ['Non-brand — Braces cost', 'SEARCH'], ['Competitor', 'SEARCH'], ['PMax — Scan booking', 'PERFORMANCE_MAX'], ['Demand Gen — Video', 'DEMAND_GEN']]
+      .map(([n, t], i) => { const s = r(1.5e5, 7e5) * k, imp = s / r(20, 80) * 1000, c = imp * r(.02, .09), is = t === 'SEARCH' ? r(.35, .9) : null; return { id: String(100 + i), name: n, status: 'ENABLED', type: t, ...m(s, imp, c, s / r(600, 1800)), is, lostRank: is === null ? null : (1 - is) * r(.3, .8), lostBudget: is === null ? null : null }; })
+      .map(c => (c.is !== null ? { ...c, lostBudget: Math.max(0, 1 - c.is - c.lostRank) } : c)); },
+  keywords(_, days) { reset(24); const k = days / 30;
+    return ['clear aligners', 'invisible braces', 'teeth straightening', 'aligners price', 'braces cost', 'orthodontist near me', 'aligners near me', 'teeth gap treatment', 'braces for adults', 'aligner emi']
+      .map(t => { const s = r(2e4, 2.2e5) * k, imp = s / r(30, 90) * 1000, c = imp * r(.03, .09); return { text: t, match: pick(['EXACT', 'PHRASE', 'BROAD']), qs: Math.round(r(3, 10)), campaign: 'Non-brand — Aligners', adGroup: 'Core', ...m(s, imp, c, s / r(500, 2200)) }; }); },
+  searchTerms(_, days) { reset(25); const k = days / 30;
+    return ['invisible braces price', 'aligners near me', 'free dental checkup', 'cheap braces', 'aligner emi', 'dentist jobs', 'teeth whitening at home', 'clear aligners mumbai', 'braces for kids', 'invisalign vs aligners', 'orthodontist salary', 'smile makeover cost', 'how long do aligners take', 'aligners side effects']
+      .map((t, i) => { const s = r(1500, 4.5e4) * k, imp = s / r(30, 90) * 1000, c = imp * r(.03, .08), conv = i % 4 === 2 ? 0 : s / r(500, 2500); return { term: t, status: pick(['NONE', 'NONE', 'ADDED']), campaign: 'Non-brand — Aligners', adGroup: 'Core', ...m(s, imp, c, conv) }; }); },
+  creatives(_, days) { reset(26); const k = days / 30;
+    return ['Clear aligners from ₹X/month | Free scan', 'Straighter teeth at home | Book now', 'Invisible braces | Doctor-led plans', 'No metal, no wires | Start today', 'Aligners in 6 months | EMI'].map((h, i) => { const s = r(4e4, 3e5) * k, imp = s / r(25, 70) * 1000, c = imp * r(.03, .08);
+      return { id: 'g' + i, platform: 'google', name: h, title: h, body: 'example.com/aligners', format: 'RESPONSIVE_SEARCH_AD', status: 'ENABLED', campaign: 'Non-brand — Aligners', adset: 'Core', thumb: null, ...m(s, imp, c, s / r(600, 1600)) }; }); },
+  audiences(_, days) { reset(27); const k = days / 30; const row = (key, w, cpl) => { const s = 9e5 * w * k, imp = s / 40 * 1000, c = imp * .05; return { key, ...m(s, imp, c, s / cpl) }; };
+    return { age: [['18-24', .15, 1300], ['25-34', .38, 900], ['35-44', .26, 980], ['45-54', .12, 1250], ['55-64', .05, 1600], ['65+', .02, 2100], ['Unknown', .02, 1400]].map(a => row(...a)),
+             gender: [['Female', .55, 920], ['Male', .42, 1080], ['Unknown', .03, 1300]].map(a => row(...a)),
+             lists: [['In-market: Dental services', 'Non-brand — Aligners', 'Core'], ['Remarketing: site visitors 30d', 'Brand — Exact', 'Brand'], ['Custom segment: competitor searchers', 'Competitor', 'Comp']].map(([n, c, g]) => { const s = r(5e4, 2.5e5) * k, imp = s / 40 * 1000; return { name: n, campaign: c, adGroup: g, ...m(s, imp, imp * .05, s / r(700, 1500)) }; }) }; },
+};
+return { meta, google };
+
+})();
+
+const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+/* AdsPulse dashboard (vanilla JS). Talks only to this app's own /api routes. */
+const S = { status: null, accounts: { meta: [], google: [] }, sel: { meta: LS.get('sel-meta') || '', google: LS.get('sel-google') || '' },
+  days: +(LS.get('days') || 30), view: location.hash.slice(1) || 'overview', tabs: {}, data: {} };
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const sum = (a, f) => a.reduce((s, x) => s + (f(x) || 0), 0);
+const div = (a, b) => (b ? a / b : null);
+const CHARTS = [];
+const PNAME = { meta: 'Meta', google: 'Google' };
+
+/* ---------- formatting ---------- */
+const cur = p => (S.accounts[p].find(a => a.id === S.sel[p]) || {}).currency || 'INR';
+const money = (v, p = 'meta') => v == null || !isFinite(v) ? '–' : new Intl.NumberFormat('en-IN', { style: 'currency', currency: cur(p), maximumFractionDigits: v < 100 ? 2 : 0 }).format(v);
+const n = v => v == null || !isFinite(v) ? '–' : Math.round(v).toLocaleString('en-IN');
+const pct = (v, d = 2) => v == null || !isFinite(v) ? '–' : (v * 100).toFixed(d) + '%';
+const plat = p => `<span class="plat ${p}"></span>${PNAME[p]}`;
+const pill = (k, t) => `<span class="pill p-${k}">${esc(t)}</span>`;
+const tabs = (key, opts, def) => `<div class="tabs">${opts.map(([v, l]) => `<button data-tab="${key}" data-v="${v}" class="${(S.tabs[key] ?? def) === v ? 'on' : ''}">${l}</button>`).join('')}</div>`;
+const tab = (k, d) => S.tabs[k] ?? d;
+function table(cols, rows, empty = 'No data for this range.') {
+  return `<div class="tw"><table><thead><tr>${cols.map(c => `<th class="${c.l ? 'l' : ''}">${c.h}</th>`).join('')}</tr></thead><tbody>${rows.length ? rows.map(r => `<tr>${cols.map(c => `<td class="${c.l ? 'l' : ''} ${c.cls ? c.cls(r) : ''}">${c.f(r)}</td>`).join('')}</tr>`).join('') : `<tr><td class="l" colspan="${cols.length}" style="color:var(--mute)">${empty}</td></tr>`}</tbody></table></div>`;
+}
+const card = (t, sub, body, cls = '') => `<section class="card ${cls}">${t ? `<h3>${t}</h3>` : ''}${sub ? `<p class="sub">${sub}</p>` : ''}${body}</section>`;
+const kpi = (l, v, d = '') => `<div class="card kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="d">${d}</div></div>`;
+
+/* ---------- data loading ---------- */
+async function get(url) {
+  const u = new URL(url, 'https://demo.local');
+  await new Promise(r => setTimeout(r, 120));
+  if (u.pathname === '/api/status') return { meta: { mode: 'demo', configured: false, user: null, version: 'v25.0' }, google: { mode: 'demo', configured: false, user: null, version: 'v25' } };
+  const m = u.pathname.match(/^\/api\/(meta|google)\/(\w+)$/);
+  if (!m || !DEMO[m[1]][m[2]]) throw new Error('Not found');
+  return { mode: 'demo', data: DEMO[m[1]][m[2]](u.searchParams.get('account'), +(u.searchParams.get('days') || 30)) };
+}
+
+const live = p => S.status && S.status[p].mode !== 'disconnected' && S.sel[p];
+async function load(p, what) {
+  const key = `${p}:${what}:${S.sel[p]}:${S.days}`;
+  if (S.data[key]) return S.data[key];
+  if (!live(p)) return null;
+  const j = await get(`/api/${p}/${what}?account=${encodeURIComponent(S.sel[p])}&days=${S.days}`);
+  return (S.data[key] = j.data);
+}
+async function loadAll(map) { // { name: [platform, endpoint] }
+  const out = {}, errs = [];
+  await Promise.all(Object.entries(map).map(async ([k, [p, w]]) => { try { out[k] = await load(p, w); } catch (e) { out[k] = null; errs.push(`${PNAME[p]}: ${e.message}`); } }));
+  out._errs = [...new Set(errs)];
+  return out;
+}
+
+/* ---------- analysis rules ---------- */
+function avgCpr(rows) { return div(sum(rows, r => r.spend), sum(rows, r => r.results)); }
+function creativeVerdict(c, avg) {
+  const fatigued = c.platform === 'meta' && c.weeks && c.weeks.length >= 2 && c.frequency >= 2.5 && c.ctrFirst > 0 && c.ctrLast < c.ctrFirst * 0.8;
+  if (avg && c.results < 3 && c.spend < avg * 2) return ['mute', 'Learning', 'Not enough results yet to judge.'];
+  if (fatigued) return ['warn', 'Fatigued', `Frequency ${c.frequency.toFixed(1)} and CTR down ${pct(1 - c.ctrLast / c.ctrFirst, 0)} since the first week. Refresh the creative.`];
+  if (!c.results && avg && c.spend >= avg * 2) return ['bad', 'Not working', `Spent ${money(c.spend, c.platform)} (2× the average cost per result) with no results.`];
+  if (avg && c.cpr <= avg * 0.8) return ['good', 'Winner', `Cost per result ${pct(1 - c.cpr / avg, 0)} below the account average. Give it more budget.`];
+  if (avg && c.cpr >= avg * 1.3) return ['bad', 'Underperformer', `Cost per result ${pct(c.cpr / avg - 1, 0)} above the account average.`];
+  return ['info', 'Steady', 'Close to the account average.'];
+}
+function placementVerdict(r, avg, share) {
+  if (!avg) return ['mute', '–'];
+  if (r.results < 3 && share < 0.03) return ['mute', 'Low volume'];
+  if (!r.results && share >= 0.03) return ['bad', 'Exclude'];
+  if (r.cpr <= avg * 0.85 && share >= 0.03) return ['good', 'Scale'];
+  if (r.cpr >= avg * 1.4 && share >= 0.02) return ['bad', 'Exclude or cap'];
+  if (r.cpr >= avg * 1.15) return ['warn', 'Watch'];
+  return ['info', 'Keep'];
+}
+function audienceVerdict(r, avg, avgCtr) {
+  if (r.frequency >= 3.2 && r.ctr < avgCtr) return ['bad', 'Saturated'];
+  if (r.frequency >= 2.5) return ['warn', 'Saturating'];
+  if (avg && r.results >= 3 && r.cpr <= avg * 0.85) return ['good', 'Efficient'];
+  if (avg && r.cpr >= avg * 1.3) return ['bad', 'Expensive'];
+  return ['info', 'Steady'];
+}
+function termVerdict(t, avg) {
+  if (!t.results && avg && t.spend >= avg * 1.5) return ['bad', 'Add as negative'];
+  if (t.results >= 2 && t.status !== 'ADDED' && (!avg || t.cpr <= avg)) return ['good', 'Add as keyword'];
+  if (!t.results) return ['warn', 'Watch'];
+  return ['mute', 'Keep'];
+}
+async function buildAlerts() {
+  const d = await loadAll({ mc: ['meta', 'creatives'], gc: ['google', 'creatives'], mp: ['meta', 'placements'], ma: ['meta', 'audiences'], gt: ['google', 'searchTerms'], gk: ['google', 'campaigns'] });
+  const out = [];
+  for (const [list, p] of [[d.mc, 'meta'], [d.gc, 'google']]) if (list) { const a = avgCpr(list); list.forEach(c => { const [k, l, why] = creativeVerdict(c, a); if (['bad', 'warn', 'good'].includes(k)) out.push({ sev: k, p, area: 'Creative', t: `${l}: ${c.name}`, m: why, spend: c.spend }); }); }
+  if (d.mp) { const a = avgCpr(d.mp), tot = sum(d.mp, r => r.spend); d.mp.forEach(r => { const [k, l] = placementVerdict(r, a, r.spend / tot); if (k === 'bad' || k === 'good') out.push({ sev: k, p: 'meta', area: 'Placement', t: `${l}: ${r.platform} ${r.position.replace(/_/g, ' ')}`, m: `Cost per result ${money(r.cpr)} vs account ${money(a)}, ${pct(r.spend / tot, 1)} of spend.`, spend: r.spend }); }); }
+  if (d.ma) { const a = avgCpr(d.ma), ac = div(sum(d.ma, r => r.clicks), sum(d.ma, r => r.impressions)); d.ma.forEach(r => { const [k, l] = audienceVerdict(r, a, ac); if (k === 'bad' || k === 'good') out.push({ sev: k, p: 'meta', area: 'Audience', t: `${l}: ${r.name}`, m: `Frequency ${r.frequency.toFixed(1)}, CTR ${pct(r.ctr)}, cost per result ${money(r.cpr)} vs ${money(a)}.`, spend: r.spend }); }); }
+  if (d.gt) { const a = avgCpr(d.gt); d.gt.forEach(t => { const [k, l] = termVerdict(t, a); if (k === 'bad' || k === 'good') out.push({ sev: k, p: 'google', area: 'Search term', t: `${l}: “${t.term}”`, m: `${money(t.spend, 'google')} spend, ${n(t.results)} conversions.`, spend: t.spend }); }); }
+  if (d.gk) d.gk.filter(c => c.lostBudget > 0.15 && c.cpr && c.cpr <= avgCpr(d.gk)).forEach(c => out.push({ sev: 'good', p: 'google', area: 'Budget', t: `Budget-limited winner: ${c.name}`, m: `Losing ${pct(c.lostBudget, 0)} of impression share to budget while beating the average cost per conversion.`, spend: c.spend }));
+  const order = { bad: 0, warn: 1, good: 2 };
+  out.sort((x, y) => order[x.sev] - order[y.sev] || y.spend - x.spend);
+  return { out, errs: d._errs };
+}
+
+/* ---------- views ---------- */
+const V = {};
+V.overview = { t: 'Overview', s: 'Spend and results across both platforms. A result is a lead or purchase on Meta and a conversion on Google.', async r() {
+  const d = await loadAll({ m: ['meta', 'overview'], g: ['google', 'overview'] });
+  const tot = rows => rows ? { spend: sum(rows, r => r.spend), results: sum(rows, r => r.results), clicks: sum(rows, r => r.clicks), imp: sum(rows, r => r.impressions) } : null;
+  const m = tot(d.m), g = tot(d.g);
+  const block = (p, t) => t ? `<div class="grid g4">${kpi(`${plat(p)} spend`, money(t.spend, p))}${kpi('Results', n(t.results))}${kpi('Cost per result', money(div(t.spend, t.results), p))}${kpi('CTR', pct(div(t.clicks, t.imp)), `${n(t.clicks)} clicks`)}</div>` : '';
+  S.after = () => {
+    const dates = [...new Set([...(d.m || []), ...(d.g || [])].map(r => r.date))].sort();
+    const by = (rows, k) => dates.map(dt => { const r = (rows || []).find(x => x.date === dt); return r ? r[k] : null; });
+    chart('c-ov', { type: 'bar', data: { labels: dates.map(x => x.slice(5)), datasets: [
+      ...(d.m ? [{ label: 'Meta spend', data: by(d.m, 'spend'), backgroundColor: '#7ea6ff', stack: 's' }] : []),
+      ...(d.g ? [{ label: 'Google spend', data: by(d.g, 'spend'), backgroundColor: '#4cc38a', stack: 's' }] : []),
+      ...(d.m ? [{ label: 'Meta results', type: 'line', data: by(d.m, 'results'), borderColor: '#b48cf2', yAxisID: 'y1', pointRadius: 0, tension: .3 }] : []),
+      ...(d.g ? [{ label: 'Google conversions', type: 'line', data: by(d.g, 'results'), borderColor: '#eaa54a', yAxisID: 'y1', pointRadius: 0, tension: .3 }] : [])] },
+      options: { scales: { x: { stacked: true, ticks: { maxTicksLimit: 10 } }, y: { stacked: true }, y1: { position: 'right', grid: { display: false } } } } });
+  };
+  const both = m && g ? kpi('Combined spend', money(m.spend + g.spend, 'meta'), cur('meta') === cur('google') ? `${n(m.results + g.results)} results` : 'Accounts use different currencies') : '';
+  return { errs: d._errs, html: `${both ? `<div class="grid g4">${both}</div><div class="mt"></div>` : ''}${block('meta', m)}${m && g ? '<div class="mt"></div>' : ''}${block('google', g)}
+    ${m || g ? `<div class="mt">${card('Daily spend and results', '', '<div class="chartbox"><canvas id="c-ov"></canvas></div>')}</div>` : ''}` };
+} };
+
+V.placements = { t: 'Placements', s: 'Where your ads ran and what each placement cost per result.', async r() {
+  const d = await loadAll({ m: ['meta', 'placements'], g: ['google', 'placements'] });
+  let html = '';
+  if (d.m) {
+    const a = avgCpr(d.m), tot = sum(d.m, r => r.spend);
+    const rows = [...d.m].sort((x, y) => y.spend - x.spend);
+    html += card(`${plat('meta')} placements`, `Account average cost per result: ${money(a)}. “Scale” is at least 15% cheaper with 3%+ of spend; “Exclude or cap” is 40%+ more expensive.`,
+      table([{ h: 'Platform', l: 1, f: r => esc(r.platform) }, { h: 'Position', l: 1, f: r => esc(r.position.replace(/_/g, ' ')) }, { h: 'Spend', f: r => money(r.spend) }, { h: 'Share', f: r => `<div class="bar" title="${pct(r.spend / tot, 1)}"><i style="width:${r.spend / tot * 100}%"></i></div>` }, { h: 'Impr.', f: r => n(r.impressions) }, { h: 'CPM', f: r => money(r.cpm) }, { h: 'CTR', f: r => pct(r.ctr) }, { h: 'Results', f: r => n(r.results) }, { h: 'Cost / result', f: r => money(r.cpr), cls: r => !a || !r.cpr ? '' : r.cpr <= a * .85 ? 'up' : r.cpr >= a * 1.2 ? 'dn' : '' }, { h: 'Verdict', f: r => { const [k, l] = placementVerdict(r, a, r.spend / tot); return pill(k, l); } }], rows));
+  }
+  if (d.g) {
+    const a = avgCpr(d.g.networks), tot = sum(d.g.networks, r => r.spend);
+    html += `<div class="grid g2 mt">${card(`${plat('google')} networks`, 'Search, YouTube, Display and Performance Max inventory.', table([{ h: 'Network', l: 1, f: r => esc(r.position) }, { h: 'Spend', f: r => money(r.spend, 'google') }, { h: 'Share', f: r => pct(r.spend / tot, 1) }, { h: 'CTR', f: r => pct(r.ctr) }, { h: 'Conv.', f: r => n(r.results) }, { h: 'Cost / conv.', f: r => money(r.cpr, 'google'), cls: r => !a || !r.cpr ? '' : r.cpr <= a * .85 ? 'up' : r.cpr >= a * 1.2 ? 'dn' : '' }], [...d.g.networks].sort((x, y) => y.spend - x.spend)))}
+      ${card(`${plat('google')} devices`, '', table([{ h: 'Device', l: 1, f: r => esc(r.device) }, { h: 'Spend', f: r => money(r.spend, 'google') }, { h: 'CTR', f: r => pct(r.ctr) }, { h: 'Conv.', f: r => n(r.results) }, { h: 'Cost / conv.', f: r => money(r.cpr, 'google') }], d.g.devices))}</div>`;
+  }
+  if (d.m) S.after = () => { const rows = [...d.m].filter(r => r.spend > 0).sort((x, y) => y.spend - x.spend).slice(0, 10); chart('c-pl', { type: 'bar', data: { labels: rows.map(r => `${r.platform} ${r.position.replace(/_/g, ' ')}`), datasets: [{ label: 'Cost per result', data: rows.map(r => r.cpr), backgroundColor: '#7ea6ff' }] }, options: { indexAxis: 'y', plugins: { legend: { display: false } } } }); };
+  if (d.m) html += `<div class="mt">${card('Meta cost per result by placement', 'Top 10 placements by spend.', '<div class="chartbox"><canvas id="c-pl"></canvas></div>')}</div>`;
+  return { errs: d._errs, html };
+} };
+
+V.creatives = { t: 'Creatives', s: 'Every ad scored against its account average. Meta ads are also checked for fatigue week by week.', async r() {
+  const d = await loadAll({ m: ['meta', 'creatives'], g: ['google', 'creatives'] });
+  const all = [];
+  for (const [list, p] of [[d.m, 'meta'], [d.g, 'google']]) if (list) { const a = avgCpr(list); list.forEach(c => { const [k, l, why] = creativeVerdict(c, a); all.push({ ...c, p, k, l, why }); }); }
+  const f = tab('cf', 'all');
+  const rows = all.filter(c => f === 'all' || c.l === f).sort((x, y) => y.spend - x.spend);
+  const count = l => all.filter(c => c.l === l).length;
+  const cardHtml = c => `<article class="cr">${c.thumb ? `<div class="th" style="background-image:url('${esc(c.thumb)}')" role="img" aria-label="${esc(c.name)}"></div>` : `<div class="th txt">${esc(c.title || c.name)}</div>`}
+    <div class="bd"><div class="nm" title="${esc(c.name)}">${esc(c.name)}</div><div class="meta">${plat(c.p)} · ${esc(c.campaign || '')} › ${esc(c.adset || '')}</div>
+    <dl><div><dt>Spend</dt><dd>${money(c.spend, c.p)}</dd></div><div><dt>Results</dt><dd>${n(c.results)}</dd></div><div><dt>Cost / result</dt><dd>${money(c.cpr, c.p)}</dd></div>
+    <div><dt>CTR</dt><dd>${pct(c.ctr)}</dd></div><div><dt>Impr.</dt><dd>${n(c.impressions)}</dd></div><div><dt>${c.p === 'meta' ? 'Frequency' : 'Format'}</dt><dd>${c.p === 'meta' ? (c.frequency || 0).toFixed(1) : esc((c.format || '').replace(/_/g, ' ').toLowerCase())}</dd></div></dl>
+    <div>${pill(c.k, c.l)}</div><div class="why">${esc(c.why)}</div></div></article>`;
+  return { errs: d._errs, html: `<div class="grid g4">${kpi('Ads with spend', n(all.length))}${kpi('Winners', n(count('Winner')), 'Cheaper than average by 20%+')}${kpi('Fatigued', n(count('Fatigued')), 'Frequency up, CTR down')}${kpi('Not working', n(count('Not working') + count('Underperformer')), 'Expensive or no results')}</div>
+    <div class="mt">${tabs('cf', [['all', 'All'], ['Winner', 'Winners'], ['Fatigued', 'Fatigued'], ['Underperformer', 'Underperformers'], ['Not working', 'Not working'], ['Learning', 'Learning']], 'all')}
+    ${rows.length ? `<div class="cgrid">${rows.map(cardHtml).join('')}</div>` : '<p class="empty">No ads in this group.</p>'}</div>` };
+} };
+
+V.audiences = { t: 'Audiences', s: 'Targeting performance: Meta ad sets with their targeting, plus age and gender splits on both platforms.', async r() {
+  const d = await loadAll({ m: ['meta', 'audiences'], md: ['meta', 'demographics'], g: ['google', 'audiences'] });
+  let html = '';
+  if (d.m) {
+    const a = avgCpr(d.m), ac = div(sum(d.m, r => r.clicks), sum(d.m, r => r.impressions));
+    html += card(`${plat('meta')} ad set audiences`, `Saturated means frequency above 3.2 with below-average CTR. Average cost per result ${money(a)}.`,
+      table([{ h: 'Ad set', l: 1, f: r => esc(r.name) }, { h: 'Targeting', l: 1, f: r => `<span title="${esc(r.targeting)}">${esc(r.targeting)}</span>` }, { h: 'Spend', f: r => money(r.spend) }, { h: 'Reach', f: r => n(r.reach) }, { h: 'Frequency', f: r => (r.frequency || 0).toFixed(2), cls: r => r.frequency >= 3.2 ? 'dn' : '' }, { h: 'CTR', f: r => pct(r.ctr) }, { h: 'Results', f: r => n(r.results) }, { h: 'Cost / result', f: r => money(r.cpr) }, { h: 'Verdict', f: r => { const [k, l] = audienceVerdict(r, a, ac); return pill(k, l); } }], [...d.m].sort((x, y) => y.spend - x.spend)));
+  }
+  if (d.md) {
+    const ages = [...new Set(d.md.map(r => r.age))], gs = ['female', 'male', 'unknown'].filter(g => d.md.some(r => r.gender === g));
+    const a = avgCpr(d.md);
+    const cell = (ag, g) => { const r = d.md.find(x => x.age === ag && x.gender === g); return r ? `<span class="${!a || !r.cpr ? '' : r.cpr <= a * .85 ? 'up' : r.cpr >= a * 1.2 ? 'dn' : ''}">${money(r.cpr)}</span><br><small style="color:var(--faint)">${money(r.spend)}</small>` : '–'; };
+    html += `<div class="mt">${card(`${plat('meta')} cost per result by age and gender`, 'Green is at least 15% cheaper than average, red at least 20% more expensive. Spend shown underneath.',
+      `<div class="tw"><table><thead><tr><th class="l">Age</th>${gs.map(g => `<th>${g}</th>`).join('')}</tr></thead><tbody>${ages.map(ag => `<tr><td class="l">${ag}</td>${gs.map(g => `<td>${cell(ag, g)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`)}</div>`;
+  }
+  if (d.g) {
+    const cols = [{ h: 'Segment', l: 1, f: r => esc(r.key || r.name) }, { h: 'Spend', f: r => money(r.spend, 'google') }, { h: 'CTR', f: r => pct(r.ctr) }, { h: 'Conv.', f: r => n(r.results) }, { h: 'Cost / conv.', f: r => money(r.cpr, 'google') }];
+    html += `<div class="grid g3 mt">${card(`${plat('google')} age`, '', table(cols, d.g.age))}${card(`${plat('google')} gender`, '', table(cols, d.g.gender))}${card(`${plat('google')} audience segments`, 'Remarketing lists, in-market and custom segments.', table([{ h: 'Audience', l: 1, f: r => esc(r.name) }, ...cols.slice(1)], d.g.lists, 'No audience segments attached.'))}</div>`;
+  }
+  return { errs: d._errs, html };
+} };
+
+V.search = { t: 'Google Search', s: 'Campaign impression share, keywords and the search terms that triggered your ads.', async r() {
+  const d = await loadAll({ c: ['google', 'campaigns'], k: ['google', 'keywords'], t: ['google', 'searchTerms'] });
+  if (!d.c && !d.k && !d.t) return { errs: d._errs, html: '' };
+  const g = v => money(v, 'google'), a = d.t ? avgCpr(d.t) : null, f = tab('tf', 'all');
+  const terms = (d.t || []).map(t => ({ ...t, v: termVerdict(t, a) })).filter(t => f === 'all' || t.v[1] === f);
+  return { errs: d._errs, html: card('Campaigns', 'Impression share lost to rank means ad quality or bids; lost to budget means the daily budget runs out.', table([{ h: 'Campaign', l: 1, f: r => esc(r.name) }, { h: 'Type', l: 1, f: r => esc((r.type || '').replace(/_/g, ' ').toLowerCase()) }, { h: 'Spend', f: r => g(r.spend) }, { h: 'Clicks', f: r => n(r.clicks) }, { h: 'Conv.', f: r => n(r.results) }, { h: 'Cost / conv.', f: r => g(r.cpr) }, { h: 'Impr. share', f: r => pct(r.is, 0) }, { h: 'Lost: rank', f: r => pct(r.lostRank, 0) }, { h: 'Lost: budget', f: r => pct(r.lostBudget, 0), cls: r => r.lostBudget > .15 ? 'dn' : '' }], d.c || []))
+    + `<div class="mt">${card('Keywords', 'Top 200 by spend.', table([{ h: 'Keyword', l: 1, f: r => esc(r.text) }, { h: 'Match', l: 1, f: r => esc((r.match || '').toLowerCase()) }, { h: 'QS', f: r => r.qs ?? '–', cls: r => r.qs && r.qs <= 4 ? 'dn' : '' }, { h: 'Spend', f: r => g(r.spend) }, { h: 'CTR', f: r => pct(r.ctr) }, { h: 'Conv.', f: r => n(r.results) }, { h: 'Cost / conv.', f: r => g(r.cpr) }], d.k || []))}</div>`
+    + `<div class="mt">${card('Search terms', `Zero conversions after 1.5× the average cost per conversion (${g(a)}) suggests a negative keyword. Converting terms you don’t target yet are keyword candidates.`,
+      tabs('tf', [['all', 'All'], ['Add as negative', 'Add as negative'], ['Add as keyword', 'Add as keyword'], ['Watch', 'Watch']], 'all') +
+      table([{ h: 'Search term', l: 1, f: r => esc(r.term) }, { h: 'Campaign', l: 1, f: r => esc(r.campaign) }, { h: 'Spend', f: r => g(r.spend) }, { h: 'Clicks', f: r => n(r.clicks) }, { h: 'Conv.', f: r => n(r.results) }, { h: 'Cost / conv.', f: r => g(r.cpr) }, { h: 'Suggestion', f: r => pill(r.v[0], r.v[1]) }], terms))}</div>` };
+} };
+
+V.alerts = { t: 'Alerts', s: 'Everything the rules flagged across creatives, placements, audiences and search, ordered by severity and spend.', async r() {
+  const { out, errs } = await buildAlerts();
+  $('#alert-ct').textContent = out.filter(x => x.sev === 'bad').length || '';
+  const f = tab('af', 'all');
+  const rows = out.filter(x => f === 'all' || x.sev === f);
+  return { errs, html: tabs('af', [['all', `All (${out.length})`], ['bad', `Fix (${out.filter(x => x.sev === 'bad').length})`], ['warn', `Watch (${out.filter(x => x.sev === 'warn').length})`], ['good', `Scale (${out.filter(x => x.sev === 'good').length})`]], 'all')
+    + (rows.length ? `<div class="list">${rows.map(x => `<div class="item sev-${x.sev}"><div class="h"><span>${esc(x.t)}</span><span>${plat(x.p)} · ${esc(x.area)}</span></div><div class="m">${esc(x.m)}</div></div>`).join('')}</div>` : '<p class="empty">Nothing flagged for this range.</p>') };
+} };
+
+V.connections = { t: 'Connections', s: 'Connect your ad accounts. Access is read-only: AdsPulse never changes your campaigns.', async r() {
+  const st = S.status;
+  const row = (p, label) => {
+    const s = st[p];
+    const state = s.mode === 'live' ? pill('good', `Connected${s.user ? ' as ' + s.user : ''}`) : s.mode === 'demo' ? pill('warn', 'Demo data — credentials not set') : pill('bad', 'Not connected');
+    const exp = p === 'meta' && s.expiresAt ? `<div class="sub" style="margin:4px 0 0">Token renews by reconnecting before ${new Date(s.expiresAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}.</div>` : '';
+    const btn = s.mode === 'live' ? `<button class="btn ghost" data-disconnect="${p}">Disconnect</button>` : s.configured ? `<a class="btn" href="/auth/${p}/start">Connect ${label}</a>` : `<a class="btn ghost" href="#setup-${p}">How to set up</a>`;
+    return `<div class="card"><div class="row"><div><h3>${plat(p)} ${label}</h3>${state}${exp}</div>${btn}</div>
+      ${s.mode !== 'disconnected' ? `<p class="sub" style="margin-top:10px">${S.accounts[p].length} ad account(s) available. API ${esc(s.version)}.</p>` : ''}</div>`;
+  };
+  return { html: `<div class="conn">${row('meta', 'Meta Ads')}${row('google', 'Google Ads')}</div>
+    <div class="grid g2 mt">
+    ${card('Set up Meta', '', `<ol class="steps" id="setup-meta"><li>Create an app at <b>developers.facebook.com</b> (type: Business) and add <b>Facebook Login for Business</b> and the <b>Marketing API</b>.</li><li>Add <b>${esc(location.origin)}/auth/meta/callback</b> as a valid OAuth redirect URI.</li><li>Copy the App ID and App Secret into <b>.env</b> as META_APP_ID and META_APP_SECRET. If you created a login configuration, add its ID as META_CONFIG_ID.</li><li>Restart the server and click Connect. In development mode this works for ad accounts where you’re an admin.</li></ol>`)}
+    ${card('Set up Google Ads', '', `<ol class="steps" id="setup-google"><li>In a Google Ads <b>manager account</b>, open Admin → API Center and get a <b>developer token</b>.</li><li>In Google Cloud, enable the <b>Google Ads API</b>, set up the OAuth consent screen and add yourself as a test user.</li><li>Create an <b>OAuth client ID</b> (web application) with redirect URI <b>${esc(location.origin)}/auth/google/callback</b>.</li><li>Fill GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and GOOGLE_ADS_DEVELOPER_TOKEN in <b>.env</b>, restart and click Connect.</li><li>A new token can only read <b>test accounts</b>. Real accounts need Explorer or Basic access.</li></ol>`)}
+    </div>` };
+} };
+
+V.connections = { t: 'Connections', s: 'Where a client connects their ad accounts. Access is read-only: AdsPulse never changes campaigns.', async r() {
+  const row = (p, label, acct) => `<div class="card"><div class="row"><div><h3>${plat(p)} ${label}</h3>${pill('good', 'Connected (demo)')}<p class="sub" style="margin:6px 0 0">${esc(acct)}</p></div><button class="btn ghost" disabled title="Available in the live app">Disconnect</button></div></div>`;
+  return { html: `<div class="conn">${row('meta', 'Meta Ads', 'Demo brand — Meta, ad account act_demo1')}${row('google', 'Google Ads', 'Demo brand — Google Ads, customer 123-456-7890')}</div>
+    <div class="mt">${card('How a client connects', '', `<ol class="steps"><li>The client signs up and clicks <b>Connect Meta Ads</b> or <b>Connect Google Ads</b>.</li><li>Facebook or Google asks them to approve <b>read-only</b> access and pick ad accounts.</li><li>AdsPulse pulls their data, and the dashboards and alerts fill in within a minute.</li></ol>`)}</div>` };
+} };
+
+/* ---------- charts ---------- */
+function chart(id, cfg) { const el = document.getElementById(id); if (!el || !window.Chart) return; Chart.defaults.color = '#8d98aa'; Chart.defaults.borderColor = '#283244'; Chart.defaults.maintainAspectRatio = false; Chart.defaults.font.family = 'Archivo, system-ui, sans-serif'; CHARTS.push(new Chart(el, cfg)); }
+
+/* ---------- shell ---------- */
+function banner() {
+  const q = new URLSearchParams(location.search); let h = '';
+  if (q.get('error')) h += `<div class="banner err" role="alert">${esc(q.get('error'))}</div>`;
+  if (q.get('connected')) h += `<div class="banner ok">${PNAME[q.get('connected')]} connected.</div>`;
+  const demo = ['meta', 'google'].filter(p => S.status?.[p].mode === 'demo');
+  if (demo.length && S.view !== 'connections') h += `<div class="banner demo">You're viewing the <b>AdsPulse demo</b> with sample data. Connect your own Meta and Google accounts in the free pilot. <a href="index.html#pilot">Request pilot access</a></div>`;
+  const disc = ['meta', 'google'].filter(p => S.status?.[p].mode === 'disconnected');
+  if (disc.length && S.view !== 'connections') h += `<div class="banner">${disc.map(p => PNAME[p]).join(' and ')} not connected yet. <a href="#connections">Connect</a></div>`;
+  return h;
+}
+function fillSelect(p) {
+  const el = $(`#sel-${p}`), list = S.accounts[p];
+  el.innerHTML = list.length ? list.map(a => `<option value="${esc(a.id)}">${esc(a.name)}${a.via ? ` (via ${esc(a.via)})` : ''}</option>`).join('') : '<option value="">Not connected</option>';
+  if (!list.find(a => a.id === S.sel[p])) S.sel[p] = list[0]?.id || '';
+  el.value = S.sel[p]; el.disabled = !list.length;
+}
+async function render() {
+  const v = V[S.view] || V.overview;
+  CHARTS.splice(0).forEach(c => c.destroy()); S.after = null;
+  document.querySelectorAll('.nav-a').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + S.view));
+  $('#vt').textContent = v.t; $('#vs').textContent = v.s; document.title = `${v.t} · AdsPulse`;
+  $('#banner').innerHTML = banner();
+  $('#view').innerHTML = '<div class="grid g4"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>';
+  const token = Symbol(); render.cur = token;
+  let res;
+  try { res = await v.r(); } catch (e) { res = { html: '', errs: [e.message] }; }
+  if (render.cur !== token) return; // a newer render started
+  const errs = (res.errs || []).map(e => `<div class="banner err" role="alert">${esc(e)} ${/reconnect|expired|not connected/i.test(e) ? '<a href="#connections">Go to connections</a>' : ''}</div>`).join('');
+  $('#view').innerHTML = errs + (res.html || (errs ? '' : '<p class="empty">Connect an account to see data here. <a href="#connections">Connections</a></p>'));
+  if (S.after) S.after();
+}
+async function boot() {
+  S.status = await get('/api/status');
+  await Promise.all(['meta', 'google'].map(async p => { if (S.status[p].mode === 'disconnected') return; try { S.accounts[p] = (await get(`/api/${p}/accounts`)).data; } catch (e) { S.accounts[p] = []; S.bootErr = e.message; } fillSelect(p); }));
+  ['meta', 'google'].forEach(fillSelect);
+  $('#sel-days').value = String(S.days);
+  $('#side-foot').innerHTML = 'Demo with sample data';
+  await render();
+  if (S.bootErr && S.view !== 'connections') $('#banner').insertAdjacentHTML('beforeend', `<div class="banner err">${esc(S.bootErr)}</div>`);
+  buildAlerts().then(({ out }) => { $('#alert-ct').textContent = out.filter(x => x.sev === 'bad').length || ''; }).catch(() => {});
+}
+window.addEventListener('hashchange', () => { S.view = location.hash.slice(1) || 'overview'; render(); window.scrollTo(0, 0); });
+document.addEventListener('change', e => {
+  if (e.target.id === 'sel-days') { S.days = +e.target.value; LS.set('days', S.days); render(); }
+  const m = e.target.id.match(/^sel-(meta|google)$/); if (m) { S.sel[m[1]] = e.target.value; LS.set(e.target.id, e.target.value); render(); }
+});
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-tab]'); if (t) { S.tabs[t.dataset.tab] = t.dataset.v; render(); }
+});
+boot().catch(e => { $('#view').innerHTML = `<div class="banner err">Could not load the demo: ${esc(e.message)}</div>`; });
+
+</script>
+</body>
+</html>
